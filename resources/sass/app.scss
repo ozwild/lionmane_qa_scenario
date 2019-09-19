@@ -1,0 +1,21 @@
+.ui.form {
+
+  .fields .field {
+    position: relative;
+  }
+
+  .ui.pointing.label {
+    position: absolute;
+    right: 0.5em;
+
+    &.below {
+      top: -13px;
+    }
+
+    &.above {
+      top: 63px;
+    }
+
+  }
+
+}

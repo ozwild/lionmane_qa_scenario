@@ -1,35 +1,37 @@
-import React, {Component, useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {Form, FormGroup, Input, Header, Message, Container} from "semantic-ui-react";
 import useForm from './useForm';
 import Contact from '../Models/Contact'
-import ContactService from "../Services/ContactService";
 
-const ContactForm = (props) => {
-    const contact = !props.contactId ? new Contact() : ContactService.get(props.contactId);
-    const {...initialValues} = contact;
-    const isANewContactForm = contact.isANewContact;
+const ContactForm = ({contact, onSave}) => {
+
     const [status, setStatus] = useState("");
     const [formErrors, setFormErrors] = useState({});
+    const isANewContactForm = contact.isANewContact;
     const {values, handleChange, handleSubmit, setValues} = useForm({
-        initialValues: initialValues,
+        initialValues: contact,
         onSubmit({values}) {
             setStatus("loading");
+            setFormErrors({});
             const contact = new Contact(values);
             contact.save()
                 .then(response => {
-                    setTimeout(() => setStatus("success"), 3000);
+                    setStatus("success");
                     setValues(response);
-                    if (props.onSave) {
-                        props.onSave(contact);
+                    if (onSave) {
+                        onSave(contact);
                     }
                 })
                 .catch(error => {
                     setStatus("error");
+                    console.log(error);
                     setFormErrors(error.errors);
                 });
         }
     });
+
+    useEffect(() => setValues(contact), [contact.id]);
 
     return (
         <Container text>
@@ -47,6 +49,7 @@ const ContactForm = (props) => {
                                 name="first_name"
                                 placeholder={"First Name"}
                                 onChange={handleChange}
+                                value={values.first_name}
                                 required
                                 {...(formErrors['first_name'] && {
                                     error: {
@@ -62,6 +65,7 @@ const ContactForm = (props) => {
                                 name="last_name"
                                 placeholder={"Last Name"}
                                 onChange={handleChange}
+                                value={values.last_name}
                                 required
                                 {...(formErrors['last_name'] && {
                                     error: {
@@ -81,6 +85,7 @@ const ContactForm = (props) => {
                                 name="email"
                                 placeholder={"Email Address"}
                                 onChange={handleChange}
+                                value={values.email}
                                 required
                                 {...(formErrors['email'] && {
                                     error: {
@@ -95,6 +100,7 @@ const ContactForm = (props) => {
                                 name="birth_date"
                                 placeholder={"Date of birth"}
                                 onChange={handleChange}
+                                value={values.birth_date}
                                 {...(formErrors['birth_date'] && {
                                     error: {
                                         content: formErrors['birth_date'][0],
@@ -110,7 +116,7 @@ const ContactForm = (props) => {
                                 name="telephone_1"
                                 placeholder={"Phone Number 1"}
                                 onChange={handleChange}
-                                required
+                                value={values.telephone_1}
                                 {...(formErrors['telephone_1'] && {
                                     error: {
                                         content: formErrors['telephone_1'][0],
@@ -123,7 +129,7 @@ const ContactForm = (props) => {
                                 name="telephone_2"
                                 placeholder={"Phone Number 2"}
                                 onChange={handleChange}
-                                required
+                                value={values.telephone_2}
                                 {...(formErrors['telephone_2'] && {
                                     error: {
                                         content: formErrors['telephone_2'][0],
@@ -136,7 +142,7 @@ const ContactForm = (props) => {
                                 name="telephone_3"
                                 placeholder={"Phone Number 3"}
                                 onChange={handleChange}
-                                required
+                                value={values.telephone_3}
                                 {...(formErrors['telephone_3'] && {
                                     error: {
                                         content: formErrors['telephone_3'][0],
@@ -155,41 +161,14 @@ const ContactForm = (props) => {
     )
 };
 
-/*class ContactForm extends Component {
-
-    constructor(props) {
-        super(props);
-        const contact = !this.props.contactId ? new Contact() : await ContactService.get(props.contact);
-        this.state = {
-            contact: new Contact()
-        };
-    }
-
-    componentDidMount() {
-        this.props.contactId && ContactService.get(this.props.contactId)
-            .then(contact => {
-                this.setState({contact});
-            });
-    }
-
-    render() {
-        const {onSave} = this.props;
-        const {contact} = this.state;
-        console.log(contact);
-        return (
-            <_ContactForm onSave={onSave} contact={contact}/>
-        );
-    }
-}*/
-
 ContactForm.defaultProps = {
-    contactId: null,
+    contact: new Contact(),
     onSave: () => {
     }
 };
 
 ContactForm.propTypes = {
-    contactId: PropTypes.number,
+    contact: PropTypes.object.isRequired,
     onSave: PropTypes.func
 };
 
