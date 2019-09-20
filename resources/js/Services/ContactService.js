@@ -102,4 +102,8 @@ export default class ContactService {
         return axios.delete('/api/contacts/' + contact.id);
     }
 
+    static undelete(contact) {
+        return axios.post('/api/contacts/' + contact.id);
+    }
+
 }

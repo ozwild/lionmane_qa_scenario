@@ -22,6 +22,7 @@ class CreateContactsTable extends Migration
             $table->string('telephone_1');
             $table->string('telephone_2');
             $table->string('telephone_3');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -5,7 +5,6 @@ import NavBar from './AppBar';
 import Home from "./Home";
 import ContactIndex from "./ContactIndex";
 import Footer from "./Footer";
-import ContactForm from "./ContactForm";
 import ContactShow from "./ContactShow";
 import CreateContactForm from "./CreateContactForm";
 import EditContactForm from "./EditContactForm";
@@ -21,7 +20,7 @@ class App extends Component {
                     <Switch>
 
                         <Route exact path={'/'} component={Home}/>
-                        <Route exact path='/contacts' component={ContactIndex}/>
+                        <Route path='/contacts' component={ContactIndex}/>
                         <Route exact path='/contacts/create' component={CreateContactForm}/>
                         <Route exact path='/contacts/:contactId?'
                                render={({match}) => <ContactShow contactId={parseInt(match.params.contactId)}/>}/>

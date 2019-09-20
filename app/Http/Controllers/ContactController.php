@@ -107,4 +107,13 @@ class ContactController extends Controller
         $contact->delete();
         return response()->json();
     }
+
+    public function reinstate($contactId)
+    {
+        $contact = Contact::withTrashed()
+            ->find($contactId);
+        $contact->restore();
+        return response()->json();
+    }
+
 }

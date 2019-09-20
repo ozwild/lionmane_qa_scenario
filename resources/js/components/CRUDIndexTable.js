@@ -1,14 +1,26 @@
 import React, {useState, useEffect} from 'react';
 import {Link} from "react-router-dom";
 import {Header, Button, Divider, Icon, Table, Pagination, Responsive, Segment} from "semantic-ui-react";
+import PropTypes from 'prop-types';
+import {withRouter} from 'react-router-dom';
 
-const CRUDIndexTable = ({title, headers, service, createOptions, rowTemplate}) => {
+const queryString = require('query-string');
+
+const CRUDIndexTable = (props) => {
+
+    const {title, headers, service, createOptions, rowTemplate, refreshCounter, history} = props;
+
+    const location = queryString.parse(props.location.search);
+    const requestedPage = location.page ? location.page : 1;
 
     const [data, setData] = useState([]);
     const [status, setStatus] = useState(null);
-    const [activePage, setActivePage] = useState(1);
-    const [counter, setCounter] = useState(0);
+    const [activePage, setActivePage] = useState(requestedPage);
     const [totalPages, setTotalPages] = useState(1);
+
+    if (requestedPage !== activePage) {
+        setActivePage(requestedPage);
+    }
 
     useEffect(() => {
         setStatus("loading");
@@ -18,18 +30,15 @@ const CRUDIndexTable = ({title, headers, service, createOptions, rowTemplate}) =
                 setTotalPages(response.last_page);
                 setStatus("ready");
             });
-    }, [activePage, counter]);
-
-    const refreshData = () => {
-        setCounter(counter + 1);
-    };
+    }, [activePage, refreshCounter]);
 
     const onChange = (e, pageInfo) => {
+        history.push('/contacts?page=' + pageInfo.activePage);
         setActivePage(pageInfo.activePage);
     };
 
     return (
-        <Segment {...(status === "loading" && {loading: true})}>
+        <Segment basic {...(status === "loading" && {loading: true})}>
             <Table celled compact>
                 <Table.Header>
                     <Table.Row>
@@ -69,7 +78,7 @@ const CRUDIndexTable = ({title, headers, service, createOptions, rowTemplate}) =
                 </Table.Header>
                 <Table.Body>
 
-                    {rowTemplate && data.map(datum => rowTemplate(datum, refreshData))}
+                    {rowTemplate && data.map(datum => rowTemplate(datum))}
 
                 </Table.Body>
                 <Table.Footer>
@@ -93,4 +102,22 @@ const CRUDIndexTable = ({title, headers, service, createOptions, rowTemplate}) =
     );
 };
 
-export default CRUDIndexTable;
+CRUDIndexTable.defaultProps = {
+    title: null,
+    headers: [],
+    service: null,
+    createOptions: null,
+    rowTemplate: [],
+    refreshCounter: 0
+};
+
+CRUDIndexTable.propTypes = {
+    title: PropTypes.string,
+    headers: PropTypes.array,
+    service: PropTypes.func.isRequired,
+    createOptions: PropTypes.object,
+    rowTemplate: PropTypes.func.isRequired,
+    refreshCounter: PropTypes.number
+};
+
+export default withRouter(CRUDIndexTable);

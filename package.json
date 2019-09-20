@@ -24,6 +24,7 @@
     },
     "dependencies": {
         "prop-types": "^15.7.2",
+        "query-string": "^6.8.3",
         "react-router-dom": "^5.0.1",
         "react-toasts": "^3.0.4",
         "semantic-ui-css": "^2.4.1",

@@ -1,20 +1,47 @@
-import React from 'react';
-import {Table, Button, Responsive, ButtonGroup} from "semantic-ui-react";
+import React, {useState} from 'react';
+import {Table, Button, Responsive, ButtonGroup, Message} from "semantic-ui-react";
 import CRUDIndexTable from "./CRUDIndexTable";
 import {Link} from "react-router-dom";
 import ContactService from "../Services/ContactService";
 
-const ContactIndexTable = ({data}) => {
+const ContactIndexTable = () => {
     const service = ContactService;
+    const [status, setStatus] = useState("");
+    const [deletedContact, setDeletedContact] = useState(null);
+    const [refreshCounter, setRefreshCounter] = useState(0);
     const headers = [
         "First Name", "Last Name", "Email",
         ["Date of Birth", 768], ["Telephone 1", 1200], ["Telephone 2", 1200], ["Telephone 3", 1200],
         "Options"
     ];
-    const deleteContact = (contact, refreshData) => {
+
+    const deleteContact = (contact) => {
         service.delete(contact)
-            .then(() => refreshData());
+            .then(() => {
+                setRefreshCounter(refreshCounter + 1);
+                setDeletedContact(contact);
+                setStatus("deleted");
+            });
     };
+
+    const undoDeletion = () => {
+        if (!deletedContact) return;
+        service.undelete(deletedContact)
+            .then(() => {
+                setRefreshCounter(refreshCounter + 1);
+                setStatus("restored");
+                scheduleMessageDismissal();
+            })
+    };
+
+    const scheduleMessageDismissal = () => {
+        setTimeout(() => dismissMessages(), 5000);
+    };
+
+    const dismissMessages = () => {
+        setStatus("");
+    };
+
     const rowTemplate = (contact, refreshData) => (
         <Table.Row key={contact.id}>
             <Table.Cell>
@@ -47,13 +74,30 @@ const ContactIndexTable = ({data}) => {
         </Table.Row>
     );
     return (
-        <CRUDIndexTable
-            title={"Contacts"}
-            createOptions={{icon: "user", route: "/contacts/create", title: "Create"}}
-            headers={headers}
-            service={service}
-            rowTemplate={rowTemplate}
-        />
+        <React.Fragment>
+            <CRUDIndexTable
+                title={"Contacts"}
+                createOptions={{icon: "user", route: "/contacts/create", title: "Create"}}
+                headers={headers}
+                rowTemplate={rowTemplate}
+                service={service}
+                refreshCounter={refreshCounter}
+            />
+            {status === "deleted" &&
+            <Message info
+                     onDismiss={dismissMessages}
+                     icon={"trash"}
+                     header={"Contact Deleted!"}
+                     content={<span>The contact has been deleted.  <a href={"#"}
+                                                                      onClick={() => undoDeletion()}>Undo?</a></span>}
+            />
+            }
+            {status === "restored" &&
+            <Message success
+                     icon={"redo"}
+                     header={"Contact Restored!"}/>
+            }
+        </React.Fragment>
     );
 };
 
