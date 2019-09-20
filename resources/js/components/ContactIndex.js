@@ -4,7 +4,15 @@ import {Link} from "react-router-dom";
 import ContactService from "../Services/ContactService";
 import ContactIndexTable from "./ContactIndexTable";
 
-class ContactIndex extends Component {
+const ContactIndex = () => {
+    return (
+        <Container>
+            <ContactIndexTable/>
+        </Container>
+    );
+};
+
+/*class ContactIndex extends Component {
 
     state = {
         contacts: []
@@ -26,6 +34,6 @@ class ContactIndex extends Component {
         );
     }
 
-}
+}*/
 
 export default ContactIndex;

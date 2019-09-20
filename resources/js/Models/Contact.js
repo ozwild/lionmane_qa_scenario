@@ -55,4 +55,8 @@ export default class Contact {
             .then(userData => this.fill(userData));
     }
 
+    delete(){
+        return ContactService.delete(this);
+    }
+
 }

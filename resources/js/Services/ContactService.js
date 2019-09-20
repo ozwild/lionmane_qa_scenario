@@ -38,8 +38,8 @@ export default class ContactService {
             });*/
     }
 
-    static async all() {
-        const response = await axios.get('api/contacts');
+    static async all(page = 1) {
+        const response = await axios.get('api/contacts?page=' + page);
         return await response.data;
     }
 
@@ -96,6 +96,10 @@ export default class ContactService {
 
                 throw response;
             });
+    }
+
+    static delete(contact) {
+        return axios.delete('/api/contacts/' + contact.id);
     }
 
 }

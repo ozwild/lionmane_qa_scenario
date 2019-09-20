@@ -21,7 +21,7 @@ class ContactController extends Controller
     {
         $requests = Contact::query()
             ->orderBy('created_at', 'asc')
-            ->get();
+            ->paginate(10);
         return response()->json($requests);
     }
 
