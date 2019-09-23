@@ -1,44 +1,29 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import {Route, Switch} from 'react-router-dom';
-import {ToastsContainer, ToastsStore} from 'react-toasts';
-import NavBar from './AppBar';
 import Home from "./Home";
+import Login from "./Login";
 import ContactIndex from "./ContactIndex";
-import Footer from "./Footer";
 import ContactShow from "./ContactShow";
 import CreateContactForm from "./CreateContactForm";
 import EditContactForm from "./EditContactForm";
+import AuthContext from '../Contexts/AuthContext';
+import AppLayout from './AppLayout';
+import LoginLayout from './LoginLayout';
 
-class App extends Component {
-    render() {
-        return (
-            <div>
-
-                <NavBar/>
-
-                <main>
-                    <Switch>
-
-                        <Route exact path={'/'} component={Home}/>
-                        <Route path='/contacts' component={ContactIndex}/>
-                        <Route exact path='/contacts/create' component={CreateContactForm}/>
-                        <Route exact path='/contacts/:contactId?'
-                               render={({match}) => <ContactShow contactId={parseInt(match.params.contactId)}/>}/>
-                        <Route exact path='/contacts/:contactId?/edit'
-                               render={({match}) => <EditContactForm
-                                   contactId={parseInt(match.params.contactId)}
-                               />}/>
-                    </Switch>
-                </main>
-
-                <Footer/>
-
-                <ToastsContainer store={ToastsStore} lightBackground/>
-
-            </div>
-        );
-    }
-}
+const App = () => {
+    return (
+        <AuthContext>
+            <Switch>
+                <AppLayout exact path={'/'} component={Home}/>
+                <LoginLayout exact path={'/login'} component={Login}/>
+                <AppLayout exact path='/contacts' component={ContactIndex}/>
+                <AppLayout exact path='/contacts/create' component={CreateContactForm}/>
+                <AppLayout exact path='/contacts/:contactId?' component={ContactShow}/>
+                <AppLayout exact path='/contacts/:contactId?/edit' component={EditContactForm}/>
+            </Switch>
+        </AuthContext>
+    );
+};
 
 export default App;
 

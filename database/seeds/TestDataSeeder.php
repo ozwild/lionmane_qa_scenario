@@ -14,6 +14,13 @@ class TestDataSeeder extends Seeder
         $faker = \Faker\Factory::create();
         $now = \Carbon\Carbon::now();
 
+        \App\User::create([
+            "name" => "Oscar Palencia",
+            "email" => "aozikuma@gmail.com",
+            "password" => Hash::make('123456789'),
+            "api_token" => Str::random(60),
+        ]);
+
         $data = collect()->pad(76, null)
             ->map(function () use ($faker, $now) {
                 return [

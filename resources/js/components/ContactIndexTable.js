@@ -88,8 +88,8 @@ const ContactIndexTable = () => {
                      onDismiss={dismissMessages}
                      icon={"trash"}
                      header={"Contact Deleted!"}
-                     content={<span>The contact has been deleted.  <a href={"#"}
-                                                                      onClick={() => undoDeletion()}>Undo?</a></span>}
+                     content={<span>The contact has been deleted.
+                         <a href={"#"} onClick={() => undoDeletion()}>Undo?</a></span>}
             />
             }
             {status === "restored" &&

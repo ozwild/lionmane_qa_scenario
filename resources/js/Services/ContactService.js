@@ -1,4 +1,5 @@
 import axios from 'axios';
+import AuthService from './AuthService';
 import Contact from "../Models/Contact";
 
 export default class ContactService {
@@ -23,23 +24,23 @@ export default class ContactService {
      * @returns {Promise<Contact | Promise<Contact | never>>}
      */
     static async get(id) {
-
-        const response = await axios.get(`/api/contacts/${id}`);
+        const {token} = AuthService;
+        const response = await axios.get(`/api/contacts/${id}`, {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        });
         const {data} = await response;
-        const contact = ContactService.build(data);
-        return contact;
-
-        /*return axios.get(`/api/contacts/${id}`)
-            .then(response => {
-                return ContactService.build(response.data);
-            }).catch(error => {
-                console.error(error);
-                throw error;
-            });*/
+        return ContactService.build(data);
     }
 
     static async all(page = 1) {
-        const response = await axios.get('api/contacts?page=' + page);
+        const {token} = AuthService;
+        const response = await axios.get('api/contacts?page=' + page, {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        });
         return await response.data;
     }
 
@@ -57,9 +58,23 @@ export default class ContactService {
      * @returns {Promise<AxiosResponse<any>|never>}
      */
     static save(contact) {
-        return contact.isANewContact ?
+        const result = contact.isANewContact ?
             this.#store(contact) :
             this.#update(contact);
+
+        result
+            .then(response => response.data)
+            .catch(error => {
+                const response = error.response.data;
+                response.messages = Object.values(response.errors)
+                    .reduce((reduction, errorMessages) => {
+                        return reduction.concat(errorMessages);
+                    }, []);
+
+                throw response;
+            });
+
+        return result;
     }
 
     /**
@@ -67,17 +82,12 @@ export default class ContactService {
      * @returns {Promise<AxiosResponse<any> | never>}
      */
     static #store(contact) {
-        return axios.post('/api/contacts', contact)
-            .then(response => response.data)
-            .catch(error => {
-                const response = error.response.data;
-                response.messages = Object.values(response.errors)
-                    .reduce((reduction, errorMessages) => {
-                        return reduction.concat(errorMessages);
-                    }, []);
-
-                throw response;
-            });
+        const {token} = AuthService;
+        return axios.post('/api/contacts', contact, {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        });
     }
 
     /**
@@ -85,25 +95,30 @@ export default class ContactService {
      * @returns {Promise<AxiosResponse<any> | never>}
      */
     static #update(contact) {
-        return axios.put('/api/contacts/' + contact.id, contact)
-            .then(response => response.data)
-            .catch(error => {
-                const response = error.response.data;
-                response.messages = Object.values(response.errors)
-                    .reduce((reduction, errorMessages) => {
-                        return reduction.concat(errorMessages);
-                    }, []);
-
-                throw response;
-            });
+        const {token} = AuthService;
+        return axios.put('/api/contacts/' + contact.id, contact, {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        });
     }
 
     static delete(contact) {
-        return axios.delete('/api/contacts/' + contact.id);
+        const {token} = AuthService;
+        return axios.delete('/api/contacts/' + contact.id, {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        });
     }
 
     static undelete(contact) {
-        return axios.post('/api/contacts/' + contact.id);
+        const {token} = AuthService;
+        return axios.post('/api/contacts/' + contact.id, {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }
+        });
     }
 
 }

@@ -5,8 +5,8 @@ import useDataProvider from './useDataProvider';
 import ContactService from "../Services/ContactService";
 import Contact from "../Models/Contact";
 
-const EditContactForm = ({contactId, onSave}) => {
-
+const EditContactForm = ({onSave, match}) => {
+    const {contactId} = match.params;
     const [{model, isLoading, isError}] = useDataProvider(ContactService, contactId, new Contact());
 
     return (
@@ -16,13 +16,11 @@ const EditContactForm = ({contactId, onSave}) => {
 };
 
 EditContactForm.defaultProps = {
-    contactId: null,
     onSave: () => {
     }
 };
 
 EditContactForm.propTypes = {
-    contactId: PropTypes.number.isRequired,
     onSave: PropTypes.func
 };
 

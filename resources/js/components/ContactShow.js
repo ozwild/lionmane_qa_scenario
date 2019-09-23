@@ -1,18 +1,18 @@
 import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Grid, Menu, Segment, Header, List, Container} from "semantic-ui-react";
-import useForm from './useForm';
 import Contact from '../Models/Contact'
 import ContactService from "../Services/ContactService";
-import ContactForm from "./ContactForm";
 
 class ContactShow extends Component {
+
     state = {
         contact: new Contact()
     };
 
     componentDidMount() {
-        this.props.contactId && ContactService.get(this.props.contactId)
+        const {contactId} = this.props.match.params;
+        contactId && ContactService.get(contactId)
             .then(contact => {
                 this.setState({contact});
             });

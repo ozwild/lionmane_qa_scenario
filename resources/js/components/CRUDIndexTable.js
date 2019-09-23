@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Link} from "react-router-dom";
-import {Header, Button, Divider, Icon, Table, Pagination, Responsive, Segment} from "semantic-ui-react";
+import {Header, Button, Divider, Icon, Table, Pagination, Responsive, Segment, Message, Form} from "semantic-ui-react";
 import PropTypes from 'prop-types';
 import {withRouter} from 'react-router-dom';
 
@@ -14,6 +14,7 @@ const CRUDIndexTable = (props) => {
     const requestedPage = location.page ? location.page : 1;
 
     const [data, setData] = useState([]);
+    const [dataError, setDataError] = useState(null);
     const [status, setStatus] = useState(null);
     const [activePage, setActivePage] = useState(requestedPage);
     const [totalPages, setTotalPages] = useState(1);
@@ -29,6 +30,11 @@ const CRUDIndexTable = (props) => {
                 setData(response.data);
                 setTotalPages(response.last_page);
                 setStatus("ready");
+            })
+            .catch(errors => {
+                const {response} = errors;
+                setDataError(response.statusText);
+                setStatus("error");
             });
     }, [activePage, refreshCounter]);
 
@@ -38,7 +44,8 @@ const CRUDIndexTable = (props) => {
     };
 
     return (
-        <Segment basic {...(status === "loading" && {loading: true})}>
+        <Segment basic
+                 {...(status === "loading" && {loading: true})}>
             <Table celled compact>
                 <Table.Header>
                     <Table.Row>
@@ -98,6 +105,14 @@ const CRUDIndexTable = (props) => {
 
                 </Table.Footer>
             </Table>
+
+            {dataError &&
+            <Message
+                error
+                header="Error!"
+                content={`Server responded with: "${dataError}"`}
+            />
+            }
         </Segment>
     );
 };

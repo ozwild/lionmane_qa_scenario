@@ -25,7 +25,6 @@ const ContactForm = ({contact, onSave}) => {
                 })
                 .catch(error => {
                     setStatus("error");
-                    console.log(error);
                     setFormErrors(error.errors);
                 });
         }

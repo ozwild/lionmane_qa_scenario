@@ -11,9 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return redirect()->to('/app');
-});
+/*Auth::routes();*/
+
 Route::get('/{reactRoutes?}', function () {
     return view('app');
 })->where('reactRoutes', '^((?!api).)*$');
+

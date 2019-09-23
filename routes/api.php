@@ -13,14 +13,27 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::prefix('contacts')
+Route::middleware('auth:api')
     ->group(function () {
 
-        Route::get('', 'ContactController@index');
-        Route::get('{contact}', 'ContactController@show');
-        Route::post('', 'ContactController@store');
-        Route::put('{contact}', 'ContactController@update');
-        Route::delete('{contact}', 'ContactController@destroy');
-        Route::post('{contactId}', 'ContactController@reinstate');
+        Route::prefix('contacts')
+            ->group(function () {
+
+                Route::get('', 'ContactController@index');
+                Route::get('{contact}', 'ContactController@show');
+                Route::post('', 'ContactController@store');
+                Route::put('{contact}', 'ContactController@update');
+                Route::delete('{contact}', 'ContactController@destroy');
+                Route::post('{contactId}', 'ContactController@reinstate');
+
+            });
+
+    });
+
+Route::prefix('auth')
+    ->group(function () {
+
+        Route::post('login', 'JWTController@getToken');
+        Route::post('logout', 'JWTController@logout');
 
     });
