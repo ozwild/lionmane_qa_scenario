@@ -1,11 +1,11 @@
-import React, {useState, useContext} from 'react';
-import {AuthContext} from "../Contexts/AuthContext";
+import React, {useState} from 'react';
+import {useAuth} from "../Contexts/AuthContext";
 import {Container, Form, FormGroup, Input, Card, Image} from "semantic-ui-react";
 import useForm from "./useForm";
 
 const Login = (props) => {
     const {history} = props;
-    const {login} = useContext(AuthContext);
+    const {login} = useAuth();
     const [status, setStatus] = useState("");
     const [formErrors, setFormErrors] = useState({});
     const {values, handleChange, handleSubmit, setValues} = useForm({
@@ -19,10 +19,8 @@ const Login = (props) => {
             login(values.email, values.password)
                 .then(response => {
                     setStatus("success");
-                    history.goBack();
-                    /**
-                     * @todo goto home if `back` is not defined
-                     */
+                    const newLocation = history.location.pathname === "/login" ? "/" : history.location.pathname;
+                    history.push(newLocation);
                 })
                 .catch(error => {
                     setStatus("error");

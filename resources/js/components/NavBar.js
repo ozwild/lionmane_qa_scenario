@@ -1,7 +1,7 @@
-import React, {Component, useState, useContext} from 'react';
+import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
 import {Container, Menu, Visibility, Dropdown} from 'semantic-ui-react'
-import {AuthContext} from "../Contexts/AuthContext";
+import {useAuth} from "../Contexts/AuthContext";
 
 const menuStyle = {
     border: 'none',
@@ -38,11 +38,7 @@ const NavBar = () => {
 
     const unStickTopMenu = () => setMenuFixed(false);
 
-    const {login, logout, user} = useContext(AuthContext);
-
-    const handleLogin = async () => login('aozikuma@gmail.com', '123456789');
-
-    const handleLogout = () => logout();
+    const {login, logout, user} = useAuth();
 
     const userOptions = () => {
         if (user) {
@@ -50,18 +46,6 @@ const NavBar = () => {
                 <Dropdown text={user.name} pointing className='link item'>
                     <Dropdown.Menu>
                         <Dropdown.Item> <Link to={'/'} onClick={() => logout()}> Logout</Link></Dropdown.Item>
-                        {/*<Dropdown.Item>List Item</Dropdown.Item>
-                        <Dropdown.Divider/>
-                        <Dropdown.Header>Header Item</Dropdown.Header>
-                        <Dropdown.Item>
-                            <i className='dropdown icon'/>
-                            <span className='text'>Submenu</span>
-                            <Dropdown.Menu>
-                                <Dropdown.Item>List Item</Dropdown.Item>
-                                <Dropdown.Item>List Item</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown.Item>
-                        <Dropdown.Item>List Item</Dropdown.Item>*/}
                     </Dropdown.Menu>
                 </Dropdown>
             )
@@ -70,7 +54,6 @@ const NavBar = () => {
         return (
             <>
                 <Menu.Item as={Link} to="/login">Login</Menu.Item>
-                {/*<Menu.Item as={Link} to="/register">Register</Menu.Item>*/}
             </>
         )
 
@@ -91,7 +74,7 @@ const NavBar = () => {
                     {/*<Menu.Item>
                             <Image size='mini' src='/logo-placeholder.png'/>
                         </Menu.Item>*/}
-                    <Menu.Item header>LionMane QA Test</Menu.Item>
+                    <Menu.Item header as={Link} to={"/"}>LionMane QA Test</Menu.Item>
                     <Menu.Item as={Link} to="/contacts">Contacts</Menu.Item>
 
                     <Menu.Menu position='right'>
@@ -102,104 +85,6 @@ const NavBar = () => {
         </Visibility>
     );
 
-
 };
-
-/*class NavBar extends Component {
-
-    state = {
-        menuFixed: false,
-        overlayFixed: false,
-    };
-
-    handleOverlayRef = (c) => {
-        const {overlayRect} = this.state;
-        const {height, width} = c.getBoundingClientRect();
-
-        if (!overlayRect) {
-            this.setState({overlayRect: {height, width}})
-        }
-    };
-
-    stickOverlay = () => this.setState({overlayFixed: true});
-
-    stickTopMenu = () => this.setState({menuFixed: true});
-
-    unStickOverlay = () => this.setState({overlayFixed: false});
-
-    unStickTopMenu = () => this.setState({menuFixed: false});
-
-    render() {
-
-        const {menuFixed, overlayFixed, overlayRect} = this.state;
-
-        const handleLogin = async () => {
-            login('aozikuma@gmail.com', '123456789');
-        };
-
-        const handleLogout = () => {
-            logout();
-        };
-
-        return (
-            <Visibility
-                onBottomPassed={this.stickTopMenu}
-                onBottomVisible={this.unStickTopMenu}
-                once={false}
-            >
-                <Menu
-                    borderless
-                    fixed={menuFixed ? 'top' : undefined}
-                    style={menuFixed ? fixedMenuStyle : menuStyle}
-                >
-                    <Container text>
-                        {/!*<Menu.Item>
-                            <Image size='mini' src='/logo-placeholder.png'/>
-                        </Menu.Item>*!/}
-                        <Menu.Item header>LionMane QA Test</Menu.Item>
-                        <Menu.Item as={Link} to="/contacts">Contacts</Menu.Item>
-
-                        <Menu.Menu position='right'>
-                            <AuthContext.Consumer>
-                                {(login, logout, user) => {
-                                    console.log(user);
-                                    if (!user) {
-                                        return (
-                                            <>
-                                                <Menu.Item as={Link} to="/login">Login</Menu.Item>
-                                                <Menu.Item as={Link} to="/register">Register</Menu.Item>
-                                            </>
-                                        )
-                                    } else {
-                                        return (
-                                            <Dropdown text={user.name} pointing className='link item'>
-                                                <Dropdown.Menu>
-                                                    <Dropdown.Item onClick={() => logout()}>Logout</Dropdown.Item>
-                                                    <Dropdown.Item>List Item</Dropdown.Item>
-                                                    <Dropdown.Divider/>
-                                                    <Dropdown.Header>Header Item</Dropdown.Header>
-                                                    <Dropdown.Item>
-                                                        <i className='dropdown icon'/>
-                                                        <span className='text'>Submenu</span>
-                                                        <Dropdown.Menu>
-                                                            <Dropdown.Item>List Item</Dropdown.Item>
-                                                            <Dropdown.Item>List Item</Dropdown.Item>
-                                                        </Dropdown.Menu>
-                                                    </Dropdown.Item>
-                                                    <Dropdown.Item>List Item</Dropdown.Item>
-                                                </Dropdown.Menu>
-                                            </Dropdown>
-                                        );
-                                    }
-                                }}
-                            </AuthContext.Consumer>
-                        </Menu.Menu>
-                    </Container>
-                </Menu>
-            </Visibility>
-        );
-    }
-
-}*/
 
 export default NavBar;

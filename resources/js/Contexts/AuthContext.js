@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import AuthService from '../Services/AuthService';
 
-export const AuthContext = React.createContext({});
+const AuthContext = React.createContext({});
 
-export default ({children}) => {
+function AuthProvider(props) {
 
     const previousUser = AuthService.loggedInUser;
     const previousToken = AuthService.token;
@@ -25,17 +25,19 @@ export default ({children}) => {
         setToken(null);
     };
 
-    useEffect(() => {
-    }, [user]);
-
-    const defaultContext = {
-        login, logout, user, token, expiration
+    const isLoggedIn = () => {
+        return !!user;
     };
 
+    /*useEffect(() => {
+    }, [user]);*/
+
     return (
-        <AuthContext.Provider value={defaultContext}>
-            {children}
-        </AuthContext.Provider>
+        <AuthContext.Provider value={{isLoggedIn, login, logout, user, token, expiration}} {...props} />
     );
 
-};
+}
+
+const useAuth = () => useContext(AuthContext);
+
+export {AuthProvider, useAuth};
