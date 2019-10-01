@@ -18,17 +18,24 @@ class JWTController extends Controller
     public function getToken(Request $request)
     {
         $this->validate($request, [
-            "email" => "required|email|exists:users,email",
+            /*"email" => "required|email|exists:users,email",*/
+            "email" => "required",
             "password" => "required"
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        try {
+            $user = User::where('email', $request->email)->firstOrFail();
+        }catch(\Exception $exception){
+            $validator = Validator::make([],[]);
+            $validator->errors()->add('email','User not found');
+            throw new ValidationException($validator);
+        }
 
-        if (!\Hash::check($request->get('password'), $user->password)) {
+        /*if (!\Hash::check($request->get('password'), $user->password)) {
             $validator = Validator::make([], []);
             $validator->errors()->add('password', 'Incorrect password');
             throw new ValidationException($validator);
-        }
+        }*/
 
         return [
             "user" => $user,

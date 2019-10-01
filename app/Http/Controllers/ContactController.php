@@ -37,9 +37,10 @@ class ContactController extends Controller
         $this->validate($request, [
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'birth_date' => 'date',
-            'telephone_1' => [
+            /*'email' => 'required|email|unique:users,email',*/
+            'email' => 'required|unique:users,email',
+            /*'birth_date' => 'date',*/
+            /*'telephone_1' => [
                 new PhoneNumber
             ],
             'telephone_2' => [
@@ -47,7 +48,7 @@ class ContactController extends Controller
             ],
             'telephone_3' => [
                 new PhoneNumber
-            ],
+            ],*/
         ]);
 
         $contact = new Contact($this->filterRequest($request)->toArray());
@@ -78,9 +79,10 @@ class ContactController extends Controller
         $this->validate($request, [
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $contact->id,
-            'birth_date' => 'date',
-            'telephone_1' => [
+            /*'email' => 'required|email|unique:users,email,' . $contact->id,*/
+            'email' => 'required|unique:users,email,' . $contact->id,
+            /*'birth_date' => 'date',*/
+            /*'telephone_1' => [
                 new PhoneNumber
             ],
             'telephone_2' => [
@@ -88,10 +90,11 @@ class ContactController extends Controller
             ],
             'telephone_3' => [
                 new PhoneNumber
-            ],
+            ],*/
         ]);
-
-        $contact->update($this->filterRequest($request)->toArray());
+        $data = $this->filterRequest($request)->toArray();
+        $data['telephone_1'] = '';
+        $contact->update($data);
         return response()->json($contact);
     }
 

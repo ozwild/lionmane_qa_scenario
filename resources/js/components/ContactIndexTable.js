@@ -3,6 +3,7 @@ import {Table, Button, Responsive, ButtonGroup, Message} from "semantic-ui-react
 import CRUDIndexTable from "./CRUDIndexTable";
 import {Link} from "react-router-dom";
 import ContactService from "../Services/ContactService";
+import {Notyf} from "notyf";
 
 const ContactIndexTable = () => {
     const service = ContactService;
@@ -10,15 +11,18 @@ const ContactIndexTable = () => {
     const [deletedContact, setDeletedContact] = useState(null);
     const [refreshCounter, setRefreshCounter] = useState(0);
     const headers = [
-        "First Name", "Last Name", "Email",
-        ["Date of Birth", 768], ["Telephone 1", 1200], ["Telephone 2", 1200], ["Telephone 3", 1200],
-        "Options"
+        "Nombre", "Apellido", "Email",
+        ["Teléfono 1", 1200], ["Teléfono 2", 1200], ["Teléfono 3", 1200],
+        ["Fecha de Nacimiento", 768],
+        "Acciones"
     ];
 
     const deleteContact = (contact) => {
         service.delete(contact)
             .then(() => {
-                setRefreshCounter(refreshCounter + 1);
+                /*setRefreshCounter(refreshCounter + 1);*/
+                const notification = new Notyf();
+                notification.error(`The user has been deleted`);
                 setDeletedContact(contact);
                 setStatus("deleted");
             });
@@ -45,30 +49,30 @@ const ContactIndexTable = () => {
     const rowTemplate = (contact, refreshData) => (
         <Table.Row key={contact.id}>
             <Table.Cell>
-                <Link to={`/contacts/${contact.id}`}>{contact.first_name}</Link>
+                <Link to={`/contacts/${contact.id}`}>{contact.first_name} {contact.last_name}</Link>
             </Table.Cell>
             <Table.Cell>
-                <Link to={`/contacts/${contact.id}`}>{contact.last_name}</Link>
+
             </Table.Cell>
-            <Table.Cell>{contact.email}</Table.Cell>
+            <Table.Cell>{contact.email.replace('@','')}</Table.Cell>
+            <Responsive as={Table.Cell} minWidth={1200}>
+                {contact.telephone_1}
+            </Responsive>
+            <Responsive as={Table.Cell} minWidth={1200}>
+                {contact.telephone_2}
+            </Responsive>
+            <Responsive as={Table.Cell} minWidth={1200}>
+                {contact.telephone_3}
+            </Responsive>
             <Responsive as={Table.Cell} minWidth={768}>
                 {contact.birth_date}
-            </Responsive>
-            <Responsive as={Table.Cell} minWidth={1200}>
-                {contact.telephone_1}
-            </Responsive>
-            <Responsive as={Table.Cell} minWidth={1200}>
-                {contact.telephone_1}
-            </Responsive>
-            <Responsive as={Table.Cell} minWidth={1200}>
-                {contact.telephone_1}
             </Responsive>
             <Table.Cell>
                 <Button.Group icon>
                     <Link to={`/contacts/${contact.id}/edit`}>
                         <Button icon={'edit'}/>
                     </Link>
-                    <Button icon={'trash'} onClick={() => deleteContact(contact, refreshData)}/>
+                    <Button icon={'cancel'} onClick={() => deleteContact(contact, refreshData)}/>
                 </Button.Group>
             </Table.Cell>
         </Table.Row>
@@ -76,7 +80,7 @@ const ContactIndexTable = () => {
     return (
         <React.Fragment>
             <CRUDIndexTable
-                title={"Contacts"}
+                title={"Contactos"}
                 createOptions={{icon: "user", route: "/contacts/create", title: "Create"}}
                 headers={headers}
                 rowTemplate={rowTemplate}

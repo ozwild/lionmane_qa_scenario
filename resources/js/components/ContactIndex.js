@@ -1,7 +1,5 @@
-import React, {Component} from 'react';
-import {Button, Container, Header, Label, List, Segment, Icon, Divider, Image, Message} from "semantic-ui-react";
-import {Link} from "react-router-dom";
-import ContactService from "../Services/ContactService";
+import React from 'react';
+import {Container} from "semantic-ui-react";
 import ContactIndexTable from "./ContactIndexTable";
 
 const ContactIndex = () => {

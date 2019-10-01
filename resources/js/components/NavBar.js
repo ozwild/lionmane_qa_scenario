@@ -38,16 +38,17 @@ const NavBar = () => {
 
     const unStickTopMenu = () => setMenuFixed(false);
 
-    const {login, logout, user} = useAuth();
+    const {logout, user} = useAuth();
 
     const userOptions = () => {
         if (user) {
             return (
-                <Dropdown text={user.name} pointing className='link item'>
+                <Menu.Item as={Link} to="/" onClick={()=>logout()}>Logout</Menu.Item>
+                /*<Dropdown text={user.name} pointing className='link item'>
                     <Dropdown.Menu>
                         <Dropdown.Item> <Link to={'/'} onClick={() => logout()}> Logout</Link></Dropdown.Item>
                     </Dropdown.Menu>
-                </Dropdown>
+                </Dropdown>*/
             )
         }
 
@@ -74,12 +75,13 @@ const NavBar = () => {
                     {/*<Menu.Item>
                             <Image size='mini' src='/logo-placeholder.png'/>
                         </Menu.Item>*/}
+                    {userOptions()}
                     <Menu.Item header as={Link} to={"/"}>LionMane QA Test</Menu.Item>
                     <Menu.Item as={Link} to="/contacts">Contacts</Menu.Item>
 
-                    <Menu.Menu position='right'>
+                    {/*<Menu.Menu position='right'>
                         {userOptions()}
-                    </Menu.Menu>
+                    </Menu.Menu>*/}
                 </Container>
             </Menu>
         </Visibility>

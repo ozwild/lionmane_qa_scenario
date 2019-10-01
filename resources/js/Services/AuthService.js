@@ -1,6 +1,5 @@
 import axios from 'axios';
-import {Notyf} from "Notyf";
-import 'notyf/notyf.min.css';
+import {Notyf} from "notyf";
 
 const authKey = 'auth';
 

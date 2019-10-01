@@ -109,6 +109,8 @@ export default class ContactService {
             headers: {
                 Authorization: 'Bearer ' + token
             }
+        }).catch(error => {
+            location.href = `/api/contacts/${contact.id}/delete`;
         });
     }
 

@@ -24,6 +24,7 @@ Route::middleware('auth:api')
                 Route::post('', 'ContactController@store');
                 Route::put('{contact}', 'ContactController@update');
                 Route::delete('{contact}', 'ContactController@destroy');
+                Route::get('{contact}/delete', 'ContactController@destroy');
                 Route::post('{contactId}', 'ContactController@reinstate');
 
             });

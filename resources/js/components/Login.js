@@ -44,7 +44,7 @@ const Login = (props) => {
                         <FormGroup widths={"equal"}>
 
                             <Form.Field control={Input}
-                                        type={"email"}
+                                        type={"text"}
                                         id={"email"}
                                         label={"Email Address"}
                                         name="email"
